@@ -1,8 +1,8 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package com.emergentes;
+package com.ejemplo;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -37,26 +37,29 @@ public class calificaciones extends HttpServlet {
         String action = request.getParameter("action");
 
         if (action.equals("add")) {
-            String nombre = request.getParameter("nombre");
-            int primerParcial = Integer.parseInt(request.getParameter("primerParcial"));
-            int segundoParcial = Integer.parseInt(request.getParameter("segundoParcial"));
-            int examenFinal = Integer.parseInt(request.getParameter("examenFinal"));
-
-            calificacion calificacion = new calificacion(nombre, primerParcial, segundoParcial, examenFinal);
-            calificaciones.add(calificacion);
-        } else if (action.equals("edit")) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            calificacion calificacion = calificaciones.get(id - 1);
-            calificacion.setNombre(request.getParameter("nombre"));
-            calificacion.setPrimerParcial(Integer.parseInt(request.getParameter("primerParcial")));
-            calificacion.setSegundoParcial(Integer.parseInt(request.getParameter("segundoParcial")));
-            calificacion.setExamenFinal(Integer.parseInt(request.getParameter("examenFinal")));
-            calificacion.setNotaFinal(calificacion.calcularNotaFinal());
+            // Código para agregar una calificación
         } else if (action.equals("delete")) {
             int id = Integer.parseInt(request.getParameter("id"));
-            calificaciones.remove(id - 1);
+            eliminarCalificacion(calificaciones, id);
+            reorganizarIds(calificaciones);
         }
 
         response.sendRedirect(request.getContextPath() + "/calificaciones");
+    }
+
+    private void eliminarCalificacion(ArrayList<calificacion> calificaciones, int id) {
+    for (int i = 0; i < calificaciones.size(); i++) {
+        if (calificaciones.get(i).getId() == id) {
+            calificaciones.remove(i);
+            break; // Importante: salir del bucle después de eliminar el elemento
+        }
+    }
+}
+
+
+    private void reorganizarIds(ArrayList<calificacion> calificaciones) {
+        for (int i = 0; i < calificaciones.size(); i++) {
+            calificaciones.get(i).setId(i + 1);
+        }
     }
 }
